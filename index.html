@@ -1,0 +1,169 @@
+<html>
+    <head>
+        <script>
+            const tagColors = { 
+                                "#":"#6a9942",
+                                "'":"#ce9178",
+                                "\"":"#ce9178",
+                                "//":"#6a9942",
+                                "if":"#c586c0",
+                                "{":"#c586c0",
+                                "}":"#c586c0",
+                                "false":"#569cd6",
+                                "False":"#569cd6",
+                                "true":"#569cd6",
+                                "True":"#569cd6",
+                                "(":"#569cd6",
+                                ")":"#569cd6",
+                                "function":"#569cd6",
+                                "def":"#569cd6",
+                                "while":"#569cd6",
+                                "then":"#569cd6",
+                                "for":"#569cd6",
+                                "let":"#569cd6",
+                                "from":"#569cd6",
+                                "import":"#569cd6",
+                                "width":"#569cd6"
+                            };
+
+            const preBackground = "#333333";
+            const txtColor = "#9cdcfe"
+            
+            function colorIt(text)
+            {
+                let active = false;
+                let end = false;
+                let output = "";
+                let endNumber = 0;
+
+                for(let char=0; char < text.length; char++)
+                {
+                    end = false;
+                    
+                    if(text[char]=="#" && active==false)
+                    {
+                        output += "<span style='color:" + tagColors[text[char]] + "'>";
+                        active = true
+                    }
+
+                    if(text[char]=="/" && text[char+1]=="/" && active==false)
+                    {
+                        output += "<span style='color:" + tagColors["#"] + "'>";
+                        active = true
+                    }
+
+                    if(active == true && text[char]=="\n")
+                    {
+                        end = true;
+                    }
+                    
+                    if(text[char]=="'" || text[char]=="\"")
+                    {
+                        if(active==false)
+                        {
+                            output += "<span style='color:" + tagColors[text[char]] + "'>";
+                            active = true;
+                        }else{
+                            end = true;
+                        }
+                    }
+
+                    if(active==false)
+                    {
+                        for(let key in tagColors){
+                            let scan = "";
+                            for(let i=0; i < key.length; i++)
+                            {
+                                scan += text[char + i];
+                            }
+
+                            if(scan==key)
+                            {
+                                console.log(scan);
+                                endNumber = char + key.length;
+                                output += "<span style='color:" + tagColors[key] + "'>";
+                            }
+                        }
+                    }
+
+                    if(text[char]=="(" && active==false || text[char]==")" && active==false)
+                    {
+                        output += "<span style='color:" + tagColors[text[char]] + "'>";
+                        end = true
+                    }
+            
+                    output += text[char];
+
+                    if(char==endNumber-1 && active==false)
+                    {
+                        console.log(endNumber);
+                        endNumber = 0;
+                        output += "</span>";
+                    }
+
+                    if(end == true)
+                    {
+                        output += "</span>";
+                        active = false;    
+                    }
+                }
+                return output
+            }
+
+
+
+            function makePretty()
+            {
+                let el = document.getElementsByClassName("codePre");
+                for(let i=0; i < el.length; i++)
+                {
+                    let newtext = colorIt(el[i].innerHTML);
+                
+                    el[i].style.color = txtColor;    
+                    el[i].style.background = preBackground;
+                    el[i].innerHTML = newtext;    
+                }
+                
+            }
+        </script>
+    </head>
+    <body onload="makePretty()">
+        <pre class="codePre">
+#ADC opration
+from machine import ADC, Pin
+adc_variable = ADC(Pin(34))
+
+adc_variable.atten(ADC.ATTN_11DB)
+# ADC.ATTN_0DB: 1.2V
+# ADC.ATTN_2_5DB: 1.5V
+# ADC.ATTN_6DB: 2.0V
+# ADC.ATTN_11DB: the full range V: 3.3V (Default)
+
+adc_variable.width(ADC.WIDTH_10BIT)
+# 12-bit resolution is default (0 - 4095)
+# bit calculation: (2^x) - 1
+# ADC.WIDTH_9BIT: range 0 to 511
+# ADC.WIDTH_10BIT: range 0 to 1023
+# ADC.WIDTH_11BIT: range 0 to 2047
+# ADC.WIDTH_12BIT: range 0 to 4095
+
+print(adc_variable.read())
+        </pre>
+
+
+        <pre class="codePre">
+            //test
+            let i = test 2
+            def test()
+            {
+                if(something)
+                {
+
+                }else{
+
+                }
+            }
+            #comments this is bacardi!
+        </pre>
+    </body>
+</html>
